@@ -4,6 +4,8 @@
 
 ### Team Member: Just myself
 
+## Output Result please read the output.txt (https://github.com/kdlasbang/cmpe283-assignment1/blob/main/output.txt)<br>
+
 ### Implement step:<br>
 #### 1. Fork the https://github.com/torvalds/linux<br>
 #### 2. Clone repo to local. Terminal-> git clone git@github.com:kdlasbang/linux.git (remember to make connection between VM and github account , setting up some authentication and ssh key)<br>
