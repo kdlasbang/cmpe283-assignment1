@@ -45,7 +45,7 @@ struct capability_info pinbased[5] =
 /*
  * Procbased capabilities
  */
-struct capability_info procbased[21] =
+struct capability_info procbased[22] =
 {
         { 2, "Interrupt-window exiting" },
         { 3, "Use TSC offsetting" },
@@ -56,6 +56,7 @@ struct capability_info procbased[21] =
         { 12, "RDTSC exiting" },
         { 15, "CR3-load exiting" },
         { 16, "CR3-store exiting" },
+	{ 17, "Activate tertiary controls"},
         { 19, "CR8-load exiting" },
         { 20, "CR8-store exiting" },
         { 21, "Use TPR shadow" },
@@ -73,7 +74,7 @@ struct capability_info procbased[21] =
 /*
  * Secondary Procbased capabilities
  */
-struct capability_info procbased2[23] =
+struct capability_info procbased2[27] =
 {
         { 0, "Virtualize APIC accesses" },
         { 1, "Enable EPT" },
@@ -97,13 +98,17 @@ struct capability_info procbased2[23] =
         { 19, "Conceal VMX non-root operation from Intel PT" },
         { 20, "Enable XSAVES/XRSTORS" },
         { 22, "Mode-based execute control for EPT" },
-        { 25, "Use TSC scaling" }      
+	{ 23, "Sub-page write permissions for EPT"},
+	{ 24, "Intel PT uses guest physical addresses"},
+        { 25, "Use TSC scaling" },
+        { 26, "Enable user wait and pause"},
+        { 28, "Enable ENCLV exiting"}	
 };
 
 /*
  * Exit capabilities
  */
-struct capability_info Exit[11] =
+struct capability_info Exit[14] =
 {
         { 2, "Save debug controls" },
         { 9, "Host address-space size" },
@@ -115,13 +120,16 @@ struct capability_info Exit[11] =
         { 21, "Load IA32_EFER" },
         { 22, "Save VMX-preemption timer value" },
         { 23, "Clear IA32_BNDCFGS" },
-        { 24, "Conceal VM exits from Intel PT" }             
+        { 24, "Conceal VM exits from Intel PT" },
+        { 25, "Clear IA32_RTIT_CTL"},
+	{ 28, "Load CET state"},
+	{ 29, "Load PKRS"}	
 };
 
 /*
  * Entry capabilities
  */
-struct capability_info entry[9] =
+struct capability_info entry[12] =
 {
         { 2, "Load debug controls" },
         { 9, "IA-32e mode guest" },
@@ -131,7 +139,10 @@ struct capability_info entry[9] =
         { 14, "Load IA32_PAT" },
         { 15, "Load IA32_EFER" },
         { 16, "Load IA32_BNDCFGS" },
-        { 17, "Conceal VM entries from Intel PT" }              
+        { 17, "Conceal VM entries from Intel PT" },
+	{ 18, "Load IA32_RTIT_CTL"},
+	{ 20, "Load CET state"},
+	{22, "Load PKRS"}	
 };
 
 
@@ -189,25 +200,25 @@ detect_vmx_features(void)
 	rdmsr(IA32_VMX_PROCBASED_CTLS, lo, hi);
 	pr_info("Procbased Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
-	report_capability(procbased, 21, lo, hi);
+	report_capability(procbased, 22, lo, hi);
 	
 	/* Secondary Procbased controls */
 	rdmsr(IA32_VMX_PROCBASED_CTLS2, lo, hi);
 	pr_info("Secondary Procbased Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
-	report_capability(procbased2, 23, lo, hi);
+	report_capability(procbased2, 27, lo, hi);
 	
 	/* Exit controls */
 	rdmsr(IA32_VMX_EXIT_CTLS, lo, hi);
 	pr_info("Exit Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
-	report_capability(Exit, 11, lo, hi);
+	report_capability(Exit, 14, lo, hi);
 	
 	/* Entry controls */
 	rdmsr(IA32_VMX_ENTRY_CTLS, lo, hi);
 	pr_info("Entry Controls MSR: 0x%llx\n",
 		(uint64_t)(lo | (uint64_t)hi << 32));
-	report_capability(entry, 9, lo, hi);
+	report_capability(entry, 12, lo, hi);
 }
 
 /*
